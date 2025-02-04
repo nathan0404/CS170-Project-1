@@ -1,3 +1,4 @@
+
 goalBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 0]] #goal state 123456780
 #board = [[1, 2, 3], [4, 5, 0], [7, 8, 6]] #test baord 
 board = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] #test baord 
@@ -14,7 +15,6 @@ def gScore(board):
     col = 0
     for r in range(3):
         for c in range(3):
-
             if board[r][c] == goalBoard[row][col]:
                 print("score:", score, row, r, col, c)
                 score += abs((row-r) + (col-c))
