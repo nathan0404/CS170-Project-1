@@ -10,6 +10,8 @@ import copy
     board = [[4, 1, 3], [0, 2, 6], [7, 5, 8]] #5 depth 413026758
     board = [[5, 4, 2], [3, 0, 6], [7, 8, 1]] #18 depth 542306781
 
+    gScoreManhattanDistance
+    gScoreMisplacedTile
 """
 
 def main():    
@@ -23,11 +25,15 @@ def main():
             temp[j] = int(temp[j])
         board.append(temp) """
     print()
-    print("your baord is!", board)
-    aStarMisplacedTile(board)
+    print("your board is!", board)
+    print("A Star with Manhattan Distance")
+    aStar(board, gScoreManhattanDistance) #gScoreManhattanDistance #gScoreMisplacedTile
+    print("A Star with Misplaced Tile")
+    aStar(board, gScoreMisplacedTile)
+    print("Uniform Cost")
     uniformCostSearch(board)
 
-def aStarMisplacedTile(board):
+def aStar(board, gScore):
     #directions are used later to simplifying the possible swaps the zero can make
     directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     depth, maxNodes, maxQueue = 0, 0, 0
@@ -50,7 +56,7 @@ def aStarMisplacedTile(board):
         nodeString = boardToString(node)
         visited.add(nodeString)
         maxNodes += 1
-        print("current board being looked at: ", node)
+        #print("current board being looked at: ", node)
         #print(node)
         if atGoalState(node):
             printResults(depth, maxNodes, maxQueue)
@@ -69,14 +75,12 @@ def aStarMisplacedTile(board):
                 #if the board is valid and hasn't been tested, it is added to the visted set and appened as a possible solution
                 if boardCopyString not in visited:
                     fScore = gScore(boardCopy) + depth + 1
-                    print(fScore, gScore(boardCopy), depth)
+                    #print(fScore, gScore(boardCopy), depth)
                     heappush(heap, [fScore, depth + 1, boardCopy, tempRow, tempCol])
-                    for i in range(len(heap)):
-                        print(heap[i])
-                    print()
+                    
     
 #funciton to return gScore
-def gScore(board):
+def gScoreManhattanDistance(board):
     #goalBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 0]] #goal state 123456780
     curNum = 1
     score, row, col = 0, 0, 0
@@ -93,6 +97,16 @@ def gScore(board):
                     else:
                         col += 1
                     curNum += 1
+    return score
+
+def gScoreMisplacedTile(board):
+    curNum = 1
+    score = 0
+    for r in range(3):
+        for c in range(3):
+            if board[r][c] != curNum and curNum != 9:
+                score += 1
+            curNum += 1
     return score
 
 def uniformCostSearch(board):
@@ -165,6 +179,7 @@ def printResults(depth, maxNodes, maxQueue):
     print("Depth size of Tree:", depth)
     print("Max expaneded nodes: ", maxNodes)
     print("Max Queue size:", maxQueue)
+    print()
 
 #call to main
 main()
