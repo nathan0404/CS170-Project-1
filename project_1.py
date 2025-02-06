@@ -6,6 +6,7 @@ import copy
 """
     board = [[1, 2, 3], [4, 5, 6], [7, 8, 0]] #goal state 123456780
     board = [[1, 2, 3], [4, 5, 0], [7, 8, 6]] #1 depth 
+    board = [[1, 2, 3], [0, 4, 5], [7, 8, 6]] #3 depth 123045786
     board = [[4, 1, 3], [0, 2, 6], [7, 5, 8]] #5 depth 413026758
     board = [[5, 4, 2], [3, 0, 6], [7, 8, 1]] #18 depth 542306781
 
@@ -30,7 +31,6 @@ def aStarMisplacedTile(board):
     #directions are used later to simplifying the possible swaps the zero can make
     directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     depth, maxNodes, maxQueue = 0, 0, 0
-    iteration = 0
     #uses minheap
     heap = []
     #row and col are used to keep location of the zero, reducing having to find the zero every new integration
@@ -38,23 +38,22 @@ def aStarMisplacedTile(board):
     #function call to find f-score = g-score+depth(h-score)
     fScore = gScore(board)
     #appending board(cur matrix), row and col(zero position) and depth to keep track
-    heappush(heap, [fScore, board, row, col, depth])
+    heappush(heap, [fScore, depth, board, row, col])
     #set used to keep track of previous tested places
     visited = set()
 
     while heap:
-        iteration += 1
         #testing the max length of queue
         maxQueue = max(maxQueue, len(heap))
-        fScore, node, row, col, depth = heappop(heap)
+        fScore, depth, node, row, col = heappop(heap)
         #chanes board to a single 9 char string, to be saved into visited set
         nodeString = boardToString(node)
         visited.add(nodeString)
         maxNodes += 1
+        print("current board being looked at: ", node)
         #print(node)
         if atGoalState(node):
             printResults(depth, maxNodes, maxQueue)
-            print("iteration", iteration)
             return 
         for dc, dr in directions:
             #dc and dr, are temporary holders for directions, used to calculate possible places zero can move
@@ -69,26 +68,31 @@ def aStarMisplacedTile(board):
                 boardCopyString = boardToString(boardCopy)
                 #if the board is valid and hasn't been tested, it is added to the visted set and appened as a possible solution
                 if boardCopyString not in visited:
-                    fScore = gScore(boardCopy) + depth
-                    heappush(heap, [fScore, boardCopy, tempRow, tempCol, depth+1])
-                    #print(heap)
-                    #print()
+                    fScore = gScore(boardCopy) + depth + 1
+                    print(fScore, gScore(boardCopy), depth)
+                    heappush(heap, [fScore, depth + 1, boardCopy, tempRow, tempCol])
+                    for i in range(len(heap)):
+                        print(heap[i])
+                    print()
     
 #funciton to return gScore
 def gScore(board):
-    goalBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 0]] #goal state 123456780
-    score = 0
-    row = 0
-    col = 0
-    for r in range(3):
-        for c in range(3):
-            if board[r][c] == goalBoard[row][col]:
-                score += abs((row-r) + (col-c))
-                if col >= 2:
-                    col = 0
-                    row += 1
-                else:
-                    col += 1
+    #goalBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 0]] #goal state 123456780
+    curNum = 1
+    score, row, col = 0, 0, 0
+    while curNum <= 8:
+        for r in range(3):
+            for c in range(3):
+                if board[r][c] == curNum:
+                    tempCol = abs(col-c)
+                    tempRow = abs(row-r)
+                    score += tempCol + tempRow
+                    if col >= 2:
+                        col = 0
+                        row += 1
+                    else:
+                        col += 1
+                    curNum += 1
     return score
 
 def uniformCostSearch(board):
@@ -125,10 +129,6 @@ def uniformCostSearch(board):
                 boardCopy = copy.deepcopy(node)
                 boardCopy[row][col] = node[tempRow][tempCol]
                 boardCopy[tempRow][tempCol] = 0
-                """print()
-                print("before", node)
-                print("swtichable at", tempRow, tempCol)
-                print("after", boardCopy)"""
                 boardCopyString = boardToString(boardCopy)
                 #if the board is valid and hasn't been tested, it is added to the visted set and appened as a possible solution
                 if boardCopyString not in visited:
