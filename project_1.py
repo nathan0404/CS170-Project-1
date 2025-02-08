@@ -24,13 +24,13 @@ def main():
     print()
     print("your board is!", board)
     print("A Star with Manhattan Distance")
-    aStar(board, gScoreManhattanDistance) #gScoreManhattanDistance #gScoreMisplacedTile
+    aStar(board, hScoreManhattanDistance) #hScoreManhattanDistance #hScoreMisplacedTile
     print("A Star with Misplaced Tile")
-    aStar(board, gScoreMisplacedTile)
+    aStar(board, hScoreMisplacedTile)
     print("Uniform Cost")
     uniformCostSearch(board)
 
-def aStar(board, gScore):
+def aStar(board, hScore):
     #directions are used later to simplifying the possible swaps the zero can make
     directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     depth, maxNodes, maxQueue = 0, 0, 0
@@ -38,8 +38,8 @@ def aStar(board, gScore):
     heap = []
     #row and col are used to keep location of the zero, reducing having to find the zero every new integration
     row, col = findZero(board)
-    #function call to find f-score = g-score+depth(h-score)
-    fScore = gScore(board)
+    #function call to find f-score = h-score+depth(g-score)
+    fScore = hScore(board)
     #appending board(cur matrix), row and col(zero position) and depth to keep track
     heappush(heap, [fScore, depth, board, row, col])
     #set used to keep track of previous tested places
@@ -71,13 +71,13 @@ def aStar(board, gScore):
                 boardCopyString = boardToString(boardCopy)
                 #if the board is valid and hasn't been tested, it is added to the visited set and append as a possible solution
                 if boardCopyString not in visited:
-                    fScore = gScore(boardCopy) + depth + 1
-                    #print(fScore, gScore(boardCopy), depth)
+                    fScore = hScore(boardCopy) + depth + 1
+                    #print(fScore, hScore(boardCopy), depth)
                     heappush(heap, [fScore, depth + 1, boardCopy, tempRow, tempCol])
                     
     
-#function to return gScore
-def gScoreManhattanDistance(board):
+#function to return hScore
+def hScoreManhattanDistance(board):
     #goalBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 0]] #goal state 123456780
     curNum = 1
     score, row, col = 0, 0, 0
@@ -96,7 +96,7 @@ def gScoreManhattanDistance(board):
                     curNum += 1
     return score
 
-def gScoreMisplacedTile(board):
+def hScoreMisplacedTile(board):
     curNum = 1
     score = 0
     for r in range(3):
