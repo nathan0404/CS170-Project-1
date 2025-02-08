@@ -1,3 +1,4 @@
+
 from collections import deque 
 from heapq import heapify, heappush, heappop 
 import copy
@@ -9,21 +10,17 @@ import copy
     board = [[1, 2, 3], [0, 4, 5], [7, 8, 6]] #3 depth 123045786
     board = [[4, 1, 3], [0, 2, 6], [7, 5, 8]] #5 depth 413026758
     board = [[5, 4, 2], [3, 0, 6], [7, 8, 1]] #18 depth 542306781
-
-    gScoreManhattanDistance
-    gScoreMisplacedTile
 """
 
 def main():    
     print("welcome to project 1: input 3 numbers for the first row.")
-    board = [[5, 4, 2], [3, 0, 6], [7, 8, 1]] #18 depth 542306781
-    """
+    board = []    
     for i in range(3):
-        print("input 3 numbers seperated by space!")
+        print("input 3 numbers separated by space!")
         temp = input().split(" ")
         for j in range(3):
             temp[j] = int(temp[j])
-        board.append(temp) """
+        board.append(temp) 
     print()
     print("your board is!", board)
     print("A Star with Manhattan Distance")
@@ -52,7 +49,7 @@ def aStar(board, gScore):
         #testing the max length of queue
         maxQueue = max(maxQueue, len(heap))
         fScore, depth, node, row, col = heappop(heap)
-        #chanes board to a single 9 char string, to be saved into visited set
+        #changes board to a single 9 char string, to be saved into visited set
         nodeString = boardToString(node)
         visited.add(nodeString)
         maxNodes += 1
@@ -67,19 +64,19 @@ def aStar(board, gScore):
             tempCol = dc+col
             #checks if out of bounds
             if 0 <= tempRow <= 2 and 0 <= tempCol <= 2:
-                #copys board and swtiches the zero place with another number
+                #copies board and switches the zero place with another number
                 boardCopy = copy.deepcopy(node)
                 boardCopy[row][col] = node[tempRow][tempCol]
                 boardCopy[tempRow][tempCol] = 0
                 boardCopyString = boardToString(boardCopy)
-                #if the board is valid and hasn't been tested, it is added to the visted set and appened as a possible solution
+                #if the board is valid and hasn't been tested, it is added to the visited set and append as a possible solution
                 if boardCopyString not in visited:
                     fScore = gScore(boardCopy) + depth + 1
                     #print(fScore, gScore(boardCopy), depth)
                     heappush(heap, [fScore, depth + 1, boardCopy, tempRow, tempCol])
                     
     
-#funciton to return gScore
+#function to return gScore
 def gScoreManhattanDistance(board):
     #goalBoard = [[1, 2, 3], [4, 5, 6], [7, 8, 0]] #goal state 123456780
     curNum = 1
@@ -125,7 +122,7 @@ def uniformCostSearch(board):
         #testing the max length of queue
         maxQueue = max(maxQueue, len(queue))
         node, row, col, depth = queue.popleft()
-        #chanes board to a single 9 char string, to be saved into visited set
+        #changes board to a single 9 char string, to be saved into visited set
         nodeString = boardToString(node)
         visited.add(nodeString)
         maxNodes += 1
@@ -139,16 +136,16 @@ def uniformCostSearch(board):
             tempCol = dc+col
             #checks if out of bounds
             if 0 <= tempRow <= 2 and 0 <= tempCol <= 2:
-                #copys board and swtiches the zero place with another number
+                #copies board and switches the zero place with another number
                 boardCopy = copy.deepcopy(node)
                 boardCopy[row][col] = node[tempRow][tempCol]
                 boardCopy[tempRow][tempCol] = 0
                 boardCopyString = boardToString(boardCopy)
-                #if the board is valid and hasn't been tested, it is added to the visted set and appened as a possible solution
+                #if the board is valid and hasn't been tested, it is added to the visited set and append as a possible solution
                 if boardCopyString not in visited:
                     queue.append([boardCopy, tempRow, tempCol, depth+1])
        
-#changes matrix/board to a string for vistied set
+#changes matrix/board to a string for visited set
 def boardToString(board):
     string = ''
     for r in range(3):
@@ -174,10 +171,10 @@ def atGoalState(board):
     
 #printing results
 def printResults(depth, maxNodes, maxQueue):
-    print("Soultion found!")
+    print("Solution found!")
     print()
     print("Depth size of Tree:", depth)
-    print("Max expaneded nodes: ", maxNodes)
+    print("Max expanded nodes: ", maxNodes)
     print("Max Queue size:", maxQueue)
     print()
 
