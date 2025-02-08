@@ -177,6 +177,10 @@ def printResults(depth, maxNodes, maxQueue):
     print("Max expanded nodes: ", maxNodes)
     print("Max Queue size:", maxQueue)
     print()
-
+#printing function if needed
+def printing(board):
+    for r in range(3):
+        print(''+ str(board[r][0]) + " " + str(board[r][1]) + " " + str(board[r][2]))
+        
 #call to main
 main()
